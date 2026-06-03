@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ machine.name }} - Telemetry History</title>
+    <title>Machines</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
@@ -38,6 +38,16 @@
             transition: background 0.2s;
         }
         .btn-back:hover { background: #148f52; }
+        .btn-primary {
+            background: #117744;
+            color: white;
+            text-decoration: none;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
         /* --- Tab Control Styling --- */
         .tab {
@@ -103,7 +113,7 @@
         tr:hover { background: #2a2d2e; }
         
         .timestamp { color: #aaaaaa; }
-        .coords { font-family: monospace; color: #ce9178; }
+        .strong-name { font-family: sans-serif; color: #ce9178; }
 
         /* Modified Map Layout to fit seamlessly within container elements */
         #map-container { 
@@ -118,30 +128,26 @@
         }
         #map { height: 100%; width: 100%; }
 
-        /* Embedded Dark Theme Map Popup Customization */
         .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-            background: #252526 !important;
-            border: 1px solid #3c3c3c;
-            color: #fff !important;
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.8) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <a href="{% url 'machines' %}" class="btn-back">← Back to Machine List</a>
+        <a href="{% url 'machines' %}" class="btn-back">← Home</a>
 
         <div class="header">
-            <h1>🌲 {{ machine.name }}</h1>
-            <div class="meta">Serial Number: <strong>{{ machine.serial_number }}</strong></div>
-            <div class="meta">Total Recorded Pings: <strong>{{ pings.count }}</strong></div>
+            <h1>🌲 All Machinery</h1>
+            <div class="meta">Management view of all managed machines</strong></div>
         </div>
 
         <h2>Telemetry Log</h2>
         
         <div class="tab">
-            <button class="tablinks active" onclick="openTab(event, 'Table')">Table</button>
+            <button class="tablinks active" onclick="openTab(event, 'Table')">List View</button>
             <button class="tablinks" onclick="openTab(event, 'MapView')">Map View</button>
         </div>
 
@@ -149,17 +155,21 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Date & Time</th>
-                        <th>Latitude</th>
-                        <th>Longitude</th>
+                        <th>Serial Number</th>
+                        <th>Machine Name</th>
+                        <th>Current Location</th>
+                        <th>Manage</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ping in pings %}
+                    {% for machine in machines %}
                         <tr>
-                            <td class="timestamp">{{ ping.timestamp|date:"d M Y @ H:i:s" }}</td>
-                            <td class="coords">{{ ping.latitude }}</td>
-                            <td class="coords">{{ ping.longitude }}</td>
+                            <td class="timestamp">{{ machine.serial_number }}</td>
+                            <td class="strong-name">{{ machine.name }}</td>
+                            <td class="coords">{{ machine.latest_latitude|default:'N/A'|floatformat:6 }}, {{ machine.latest_longitude|default:'N/A'|floatformat:6 }}</td>
+                            <td>
+                                <a href="{% url 'machine_detail' machine.pk %}" class="btn btn-primary">View Details</a>
+                            </td>
                         </tr>
                     {% empty %}
                         <tr>
@@ -181,79 +191,47 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialize default fallback perspective array loop
-        var map = L.map('map').setView([-28.5, 28.0], 6);
+        var map = L.map('map').setView([-25.0, 31.0], 9);
 
         // 1. Base Satellite Imagery Layer
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri'
         }).addTo(map);
         
-        // 2. High Visibility Labels Pane Layer Setup
-        map.createPane('labelsPane');
-        map.getPane('labelsPane').style.zIndex = 650;
-        map.getPane('labelsPane').style.pointerEvents = 'none';
 
-        L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-            pane: 'labelsPane'
+        // 2. Transparent Roads & Labels Overlay (Creates the Hybrid Effect)
+        var labelsLayer = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Labels &copy; Esri',
+            pane: 'markerPane' // This ensures labels draw beautifully ON TOP of everything else
         }).addTo(map);
 
-        // Array storage mapping layout variables
-        var trackingCoordinates = [];
+        // Create an object to store our marker instances so we can trigger them later
+        var machineMarkers = {};
+        var bounds = L.latLngBounds();
 
-        // Parse and ingest Django loops directly into safe native JavaScript arrays
-        {% for ping in pings %}
-            trackingCoordinates.push({
-                lat: parseFloat("{{ ping.latitude }}"),
-                lng: parseFloat("{{ ping.longitude }}"),
-                time: "{{ ping.timestamp|date:'d M Y @ H:i:s' }}"
-            });
-        {% endfor %}
-
-        // Plot markers and build breadcrumb trail polyline mapping routes
-        if (trackingCoordinates.length > 0) {
-            var pointList = [];
-            
-            trackingCoordinates.forEach(function(point, index) {
-                var latLng = [point.lat, point.lng];
-                pointList.push(latLng);
-
-                // Distinct colors for deployment points (Start: Green, History: Amber, Newest: Blue)
-                var markerColor = '#e67e22'; 
-                var markerRadius = 6;
-                
-                if (index === 0) {
-                    markerColor = '#db343c'; // Newest record point entry
-                    markerRadius = 12;
-                } else if (index === trackingCoordinates.length - 1) {
-                    markerColor = '#2ecc71'; // Oldest record point entry
-                    markerRadius = 8;
-                }
-
-                L.circleMarker(latLng, {
-                    radius: markerRadius,
-                    fillColor: markerColor,
-                    color: '#fff',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.9
-                })
+        // Loop through and place the singular latest pin for each active machine
+        {% for m in active_locations %}
+            var marker = L.marker([{{ m.latest_latitude }}, {{ m.latest_longitude }}])
                 .addTo(map)
-                .bindPopup(`<strong>Point #${trackingCoordinates.length - index}</strong><br><span style="color:#aaa">${point.time}</span>`);
-            });
+                .bindPopup(`
+                    <div style="color: #333; min-width: 150px;">
+                        <a href="{% url 'machine_detail' m.id %}" style="text-decoration: none;">
+                            <strong style="font-size: 1.1rem; color: #117744; cursor: pointer;">{{ m.name }}</strong>
+                        </a>
+                        <br>
+                        <strong>S/N:</strong> {{ m.serial_number }}<br>
+                        <hr style="border: 0; border-top: 1px solid #ddd; margin: 6px 0;">
+                        <span style="font-size: 0.85rem; color: #666;">
+                            <strong>Last Ping:</strong> {{ m.latest_timestamp|date:"d M Y H:i" }}
+                        </span>
+                    </div>
+                `);
 
-            // Draw connecting tracking vector historical paths across tracking timeline points
-            L.polyline(pointList, {
-                color: '#587fd3',
-                weight: 4,
-                opacity: 0.7,
-                dashArray: '5, 10'
-            }).addTo(map);
+            bounds.extend(marker.getLatLng());
 
-            // Dynamically snap and auto-zoom map layout perspectives perfectly around all parsed metrics
-            var bounds = new L.LatLngBounds(pointList);
-            map.fitBounds(bounds, { padding: [40, 40] });
-        }
+            // Store the marker using the machine's primary key ID
+            machineMarkers[{{ m.id }}] = marker;
+        {% endfor %}
 
         // Tab Switching Logic including the hidden engine layout fix
         function openTab(evt, tabName) {
@@ -276,7 +254,7 @@
             if (tabName === 'MapView') {
                 setTimeout(function() {
                     map.invalidateSize();
-                    if (trackingCoordinates.length > 0) {
+                    if (bounds.isValid()) {
                         map.fitBounds(bounds, { padding: [40, 40], animate: false });
                     }
                 }, 50);

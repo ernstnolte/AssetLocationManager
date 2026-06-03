@@ -34,6 +34,30 @@ def machine_map(request):
     }
     return render(request, 'machinery/map.html', context)
 
+def machines(request):
+    latest_locs = MachineLocation.objects.filter(machine=OuterRef('pk')).order_by('-timestamp')
+    
+    latest_lat = latest_locs.values('latitude')[:1]
+    latest_lng = latest_locs.values('longitude')[:1]
+    latest_time = latest_locs.values('timestamp')[:1]
+    
+    # 2. Query machines and attach only their latest spatial data
+    machines_with_location = Machine.objects.annotate(
+        latest_latitude=Subquery(latest_lat),
+        latest_longitude=Subquery(latest_lng),
+        latest_timestamp=Subquery(latest_time)
+    )
+
+    active_locations = [
+        m for m in machines_with_location
+        if m.latest_latitude is not None and m.latest_longitude is not None
+    ]
+
+    return render(request, 'machinery/machines.html', {
+        'machines': machines_with_location,
+        'active_locations': active_locations
+    })
+
 def machine_detail(request, pk):
     machine = get_object_or_404(Machine, pk=pk)
     pings = MachineLocation.objects.filter(machine=machine).order_by('-timestamp')
