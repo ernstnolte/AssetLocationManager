@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ machine.name }} - Telemetry History</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e1e;
+            color: #fff;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            background: #252526;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #3c3c3c;
+            margin-bottom: 30px;
+        }
+        h1 { margin: 0; color: #4ec9b0; font-size: 2rem; }
+        .meta { color: #858585; margin-top: 5px; font-size: 1rem; }
+        
+        .btn-back {
+            display: inline-block;
+            background: #117744;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-back:hover { background: #148f52; }
+
+        /* History Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #252526;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #3c3c3c;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background: #2d2d30;
+            color: #4ec9b0;
+            font-weight: 600;
+            border-bottom: 2px solid #3c3c3c;
+        }
+        tr { border-bottom: 1px solid #3c3c3c; }
+        tr:last-child { border-bottom: none; }
+        tr:hover { background: #2a2d2e; }
+        
+        .timestamp { color: #aaaaaa; }
+        .coords { font-family: monospace; color: #ce9178; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="{% url 'machine_map' %}" class="btn-back">← Back to Fleet Map</a>
+
+        <div class="header">
+            <h1>🌲 {{ machine.name }}</h1>
+            <div class="meta">Serial Number: <strong>{{ machine.serial_number }}</strong></div>
+            <div class="meta">Total Recorded Pings: <strong>{{ pings.count }}</strong></div>
+        </div>
+
+        <h2>Telemetry Log (Newest First)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ping in pings %}
+                    <tr>
+                        <td class="timestamp">{{ ping.timestamp|date:"d M Y @ H:i:s" }}</td>
+                        <td class="coords">{{ ping.latitude }}</td>
+                        <td class="coords">{{ ping.longitude }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #858585; padding: 30px;">
+                            No GPS tracking data found for this asset.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
