@@ -13,7 +13,7 @@
             padding: 40px;
         }
         .container {
-            max-width: 900px;
+            max-width: 80%;
             margin: 0 auto;
         }
         .header {
@@ -25,6 +25,13 @@
         }
         h1 { margin: 0; color: #4ec9b0; font-size: 2rem; }
         .meta { color: #858585; margin-top: 5px; font-size: 1rem; }
+
+        .link {
+            color: #fff;
+            background: #0d5a34;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
         
         .btn-back {
             display: inline-block;
@@ -131,7 +138,7 @@
         tr:hover { background: #2a2d2e; }
         
         .timestamp { color: #aaaaaa; }
-        .strong-name { font-family: sans-serif; color: #ce9178; }
+        .strong-name { font-family: sans-serif; color: #ce9178; font-size: medium }
 
         #map-container { 
             position: relative; 
@@ -183,7 +190,9 @@
                     {% for machine in machines %}
                         <tr>
                             <td class="timestamp">{{ machine.serial_number }}</td>
-                            <td class="strong-name">{{ machine.name }}</td>
+                            <td class="strong-name">
+                                <a href="{% url 'machine_detail' machine.pk%}" class="link">{{ machine.name }}</a>
+                            </td>
                             <td class="coords">{{ machine.latest_latitude|default:'N/A'|floatformat:6 }}, {{ machine.latest_longitude|default:'N/A'|floatformat:6 }}</td>
                             <td>
                                 <a href="{% url 'machine_detail' machine.pk %}" class="btn btn-primary">View Details</a>

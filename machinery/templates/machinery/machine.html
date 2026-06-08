@@ -196,11 +196,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         // Initialize default fallback perspective array loop
-        var map = L.map('map').setView([-28.5, 28.0], 6);
+
+        var map = L.map('map', { maxZoom: 30 }).setView([-28.5, 28.0], 6);
 
         // 1. Base Satellite Imagery Layer
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri'
+            attribution: 'Tiles &copy; Esri',
+            maxZoom: 30
         }).addTo(map);
         
         // 2. High Visibility Labels Pane Layer Setup
@@ -209,7 +211,8 @@
         map.getPane('labelsPane').style.pointerEvents = 'none';
 
         L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-            pane: 'labelsPane'
+            pane: 'labelsPane',
+            maxZoom: 30
         }).addTo(map);
 
         // Array storage mapping layout variables
