@@ -37,6 +37,19 @@
             font-weight: bold;
             transition: background 0.2s;
         }
+        .btn-add {
+            display: inline-block;
+            background: #0d5a34;
+            color: white;
+            text-decoration: none;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-left: 0;
+            font-weight: bold;
+            transition: background 0.2s;
+            font-size: 1rem;
+            align-self: center;
+        }
         .btn-back:hover { background: #148f52; }
         .btn-primary {
             background: #117744;
@@ -56,7 +69,6 @@
             border: 1px solid #3c3c3c;
             border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 15px;
         }
         .tablinks {
             background: transparent;
@@ -83,13 +95,19 @@
         .tabcontent {
             animation: fadeEffect 0.3s;
         }
+        .hdiv {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            max-width: 100%;
+            margin-bottom: 15px;
+        }
 
         @keyframes fadeEffect {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        /* --- History Table Styling --- */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -115,7 +133,6 @@
         .timestamp { color: #aaaaaa; }
         .strong-name { font-family: sans-serif; color: #ce9178; }
 
-        /* Modified Map Layout to fit seamlessly within container elements */
         #map-container { 
             position: relative; 
             width: 100%;
@@ -143,12 +160,13 @@
             <h1>🌲 All Machinery</h1>
             <div class="meta">Management view of all managed machines</strong></div>
         </div>
-
-        <h2>Telemetry Log</h2>
         
-        <div class="tab">
-            <button class="tablinks active" onclick="openTab(event, 'Table')">List View</button>
-            <button class="tablinks" onclick="openTab(event, 'MapView')">Map View</button>
+        <div class="hdiv">
+            <div class="tab">
+                <button class="tablinks active" onclick="openTab(event, 'Table')">List View</button>
+                <button class="tablinks" onclick="openTab(event, 'MapView')">Map View</button>
+            </div>
+            <a href="{% url 'machine_add'%}" class="btn-add">+ Add Machine</a>
         </div>
 
         <div id="Table" class="tabcontent" style="display: block;">

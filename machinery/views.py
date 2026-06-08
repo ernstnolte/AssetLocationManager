@@ -2,7 +2,7 @@ import json
 #import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models import OuterRef, Subquery
 from django.utils.dateparse import parse_datetime
 from .models import Machine, MachineLocation
@@ -67,6 +67,33 @@ def machine_detail(request, pk):
         'pings': pings
     }
     return render(request, 'machinery/machine.html', context)
+
+def machine_edit(request, pk):
+    machine = get_object_or_404(Machine, pk=pk)
+    if request.method == 'POST':
+        # Handle form submission
+        machine.name = request.POST.get('name') or machine.name
+        machine.serial_number = request.POST.get('serial_number') or machine.serial_number
+        machine.save()
+        return redirect('machine_detail', pk=machine.pk)
+    return render(request, 'machinery/machine_edit.html', {'machine': machine})
+
+def machine_add(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        serial_number = request.POST.get('serial_number')
+        if name and serial_number:
+            machine = Machine.objects.create(name=name, serial_number=serial_number)
+            return redirect('machine_detail', pk=machine.pk)
+    return render(request, 'machinery/machine_add.html')
+
+def machine_delete(request, pk):
+    machine = get_object_or_404(Machine, pk=pk)
+    if request.method == 'POST':
+        machine.delete()
+        return redirect('machines')
+    return redirect('machines')
+
 
 def agent(request):
     machines = Machine.objects.all().order_by('name')

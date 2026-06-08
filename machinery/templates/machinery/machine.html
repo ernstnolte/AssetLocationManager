@@ -39,6 +39,19 @@
         }
         .btn-back:hover { background: #148f52; }
 
+        .btn-edit {
+            display: inline-block;
+            background: #117744;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-left: 15px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-edit:hover { background: #148f52; }
+
         /* --- Tab Control Styling --- */
         .tab {
             display: flex;
@@ -131,6 +144,7 @@
 
     <div class="container">
         <a href="{% url 'machines' %}" class="btn-back">← Back to Machine List</a>
+        <a href="{% url 'machine_edit' machine.id %}" class="btn-edit">✎ Edit Machine</a>
 
         <div class="header">
             <h1>🌲 {{ machine.name }}</h1>
