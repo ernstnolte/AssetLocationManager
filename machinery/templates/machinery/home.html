@@ -3,13 +3,6 @@
     <title>Agent Location Recorder</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        .hdiv {
-            display: flex;
-            flex-direction: row;
-            gap: 8px;
-            max-width: 100%;
-            margin-bottom: 15px;
-        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(30deg, #1e1e1e, #1e2421);
@@ -26,6 +19,7 @@
             padding: 25px;
             border-radius: 10px;
             width: 20%;
+            height: 150px;
             text-align: center;
             align-content: center;
         }
@@ -38,6 +32,15 @@
         }
         h1 { margin-bottom: 60px; color: #4ec9b0; font-size: 2rem; text-align: center;}
         .meta { color: #858585; margin-top: 5px; font-size: 1rem; }
+        .hdiv {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            max-width: 100%;
+            margin-bottom: 15px;
+            justify-content: center;
+            align-items: center;
+        }
         .btn {
             display: inline-block;
             background: #117744;
