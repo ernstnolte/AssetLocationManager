@@ -5,7 +5,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1e1e1e;
+            background: linear-gradient(30deg, #1e1e1e, #1e2421);
             color: #fff;
             margin: 0;
             padding: 40px;
@@ -29,39 +29,26 @@
             background: #117744;
             color: white;
             text-decoration: none;
+            text-align: center;
+            align-content: center;
             padding: 10px 15px;
             border-radius: 4px;
             margin-bottom: 20px;
             transition: background 0.2s;
         }
+        .btn:hover { background: #148f52; }
         .btn-back {
             background: #117744;
             font-weight: bold;
         }
-        .btn-back:hover { background: #148f52; }
         .btn-submit {
-            display: inline-block;
-            background: #117744;
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
             font-weight: bold;
-            transition: background 0.2s;
-            width: 95%;
+            max-width: 100%;
         }
-        .btn-submit:hover { background: #148f52; }
         .btn-delete {
-            display: inline-block;
-            background: #c72e2e;
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
             font-weight: bold;
-            transition: background 0.2s;
+            background: #c72e2e;
+            font-weight: bold;
         }
         .btn-delete:hover { background: #e53939; }
         .form-row {
@@ -118,8 +105,8 @@
                     <input type="text" id="serial_number" name="serial_number" value="{{ machine.serial_number }}" class="input-field">
                 </div>
                 <div class="option-row">
-                    <button id="save-btn" type="button" class="btn btn-submit" onclick="saveMachine()">Save</button>
-                    <button id="delete-btn" type="button" class="btn btn-delete" onclick="deleteMachine()">🗑️ Delete</button>
+                    <a id="save-btn" type="button" class="btn btn-submit" onclick="saveMachine()">📁 Save</a>
+                    <a id="delete-btn" type="button" class="btn btn-delete" onclick="deleteMachine()">🗑️ Delete</a>
                 </div>
             </div>
 

@@ -7,6 +7,10 @@ from django.db.models import OuterRef, Subquery
 from django.utils.dateparse import parse_datetime
 from .models import Machine, MachineLocation
 
+def home(request):
+    num_devices = Machine.objects.count()
+    return render(request, 'machinery/home.html', {'num_devices': num_devices})
+
 def machine_map(request):
     # 1. Subqueries to find the latest latitude, longitude, and timestamp for EACH machine
     latest_locs = MachineLocation.objects.filter(machine=OuterRef('pk')).order_by('-timestamp')
