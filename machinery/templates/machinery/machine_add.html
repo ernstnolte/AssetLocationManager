@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>{{ machine.name }} - Edit</title>
+    <title>Add New Machine</title>
     
     <style>
         body {
@@ -40,15 +40,8 @@
         }
         .btn-back:hover { background: #148f52; }
         .btn-submit {
-            display: center;
-            background: #117744;
-            color: white;
-            text-decoration: none;
-            padding: 15px 50px;
-            border-radius: 4px;
-            margin-bottom: 20px;
             font-weight: bold;
-            transition: background 0.2s;
+            max-width: 100%;
         }
         .btn-submit:hover { background: #148f52; }
         .btn-delete {
@@ -105,7 +98,7 @@
         <a href="{% url 'machines' %}" class="btn btn-back">← Back to Machine List</a>
         
         <div class="header">
-            <h1>✎ Add Machine</h1>
+            <h1>+ Add Machine</h1>
 
             <div class="control-left">
                 <div class="form-row">
@@ -117,7 +110,7 @@
                     <input type="text" id="serial_number" name="serial_number" value="" class="input-field">
                 </div>
                 <div class="option-row">
-                    <button id="save-btn" type="button" class="btn btn-submit" onclick="saveMachine()">Save</button>
+                    <a id="save-btn" type="button" class="btn btn-submit" onclick="saveMachine()">Save</a>
                 </div>
             </div>
 

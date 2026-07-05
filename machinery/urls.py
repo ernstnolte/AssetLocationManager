@@ -8,6 +8,7 @@ urlpatterns = [
     path('machines/', views.machines, name='machines'),
     path('machine/<int:pk>/edit/', views.machine_edit, name='machine_edit'),
     path('machine/add/', views.machine_add, name='machine_add'),
+    path('machine/edit/', views.machine_edit, name='machine_edit'),
     path('machine/<int:pk>/delete/', views.machine_delete, name='machine_delete'),
     path('agent/', views.agent, name='agent'),
     path('agent/save/', views.save_agent_location, name='save_agent_location'),

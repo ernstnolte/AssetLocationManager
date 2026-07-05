@@ -163,7 +163,7 @@
                 <button class="tablinks active" onclick="openTab(event, 'Table')">List View</button>
                 <button class="tablinks" onclick="openTab(event, 'MapView')">Map View</button>
             </div>
-            <a href="{% url 'machine_add'%}" class="btn-edit">✎ Edit Machine</a>
+            <a href="{% url 'machine_edit' machine.id%}" class="btn-edit">✎ Edit Machine</a>
         </div>
 
         <div id="Table" class="tabcontent" style="display: block;">
