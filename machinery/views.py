@@ -2,10 +2,14 @@ import json
 #import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models import OuterRef, Subquery
 from django.utils.dateparse import parse_datetime
 from .models import Machine, MachineLocation
+
+def home(request):
+    num_devices = Machine.objects.count()
+    return render(request, 'machinery/home.html', {'num_devices': num_devices})
 
 def machine_map(request):
     # 1. Subqueries to find the latest latitude, longitude, and timestamp for EACH machine
@@ -34,6 +38,30 @@ def machine_map(request):
     }
     return render(request, 'machinery/map.html', context)
 
+def machines(request):
+    latest_locs = MachineLocation.objects.filter(machine=OuterRef('pk')).order_by('-timestamp')
+    
+    latest_lat = latest_locs.values('latitude')[:1]
+    latest_lng = latest_locs.values('longitude')[:1]
+    latest_time = latest_locs.values('timestamp')[:1]
+    
+    # 2. Query machines and attach only their latest spatial data
+    machines_with_location = Machine.objects.annotate(
+        latest_latitude=Subquery(latest_lat),
+        latest_longitude=Subquery(latest_lng),
+        latest_timestamp=Subquery(latest_time)
+    )
+
+    active_locations = [
+        m for m in machines_with_location
+        if m.latest_latitude is not None and m.latest_longitude is not None
+    ]
+
+    return render(request, 'machinery/machines.html', {
+        'machines': machines_with_location,
+        'active_locations': active_locations
+    })
+
 def machine_detail(request, pk):
     machine = get_object_or_404(Machine, pk=pk)
     pings = MachineLocation.objects.filter(machine=machine).order_by('-timestamp')
@@ -43,6 +71,33 @@ def machine_detail(request, pk):
         'pings': pings
     }
     return render(request, 'machinery/machine.html', context)
+
+def machine_edit(request, pk):
+    machine = get_object_or_404(Machine, pk=pk)
+    if request.method == 'POST':
+        # Handle form submission
+        machine.name = request.POST.get('name') or machine.name
+        machine.serial_number = request.POST.get('serial_number') or machine.serial_number
+        machine.save()
+        return redirect('machine_detail', pk=machine.pk)
+    return render(request, 'machinery/machine_edit.html', {'machine': machine})
+
+def machine_add(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        serial_number = request.POST.get('serial_number')
+        if name and serial_number:
+            machine = Machine.objects.create(name=name, serial_number=serial_number)
+            return redirect('machine_detail', pk=machine.pk)
+    return render(request, 'machinery/machine_add.html')
+
+def machine_delete(request, pk):
+    machine = get_object_or_404(Machine, pk=pk)
+    if request.method == 'POST':
+        machine.delete()
+        return redirect('machines')
+    return redirect('machines')
+
 
 def agent(request):
     machines = Machine.objects.all().order_by('name')

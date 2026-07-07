@@ -1,0 +1,84 @@
+<html lang="en">
+<head>
+    <title>Agent Location Recorder</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(30deg, #1e1e1e, #1e2421);
+            color: #fff;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 80%;
+            margin: 0 auto;
+        }
+        .frame {
+            background: linear-gradient(15deg, rgba(0, 201, 124, 0.04), rgba(255, 255, 255, 0.01));
+            padding: 25px;
+            border-radius: 10px;
+            width: 20%;
+            height: 150px;
+            text-align: center;
+            align-content: center;
+        }
+        .header {
+            background: #252525;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #3c3c3c;
+            margin-bottom: 20px;
+        }
+        h1 { margin-bottom: 60px; color: #4ec9b0; font-size: 2rem; text-align: center;}
+        .meta { color: #858585; margin-top: 5px; font-size: 1rem; }
+        .hdiv {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            max-width: 100%;
+            margin-bottom: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn {
+            display: inline-block;
+            background: #117744;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            transition: background 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Home - Location Storage Project</h1>
+            <div class="hdiv">
+                <div class="frame">
+                    <h2>
+                        <a href="{% url 'machines' %}" class="btn">View Machines</a>
+                    </h2>
+                </div>
+                <div class="frame">
+                    <h2>
+                        <a href="{% url 'machine_map' %}" class="btn">🗺️ <br> View Map</a>
+                    </h2>
+                </div>
+                <div class="frame">
+                    <h2>
+                        <a href="{% url 'agent' %}" class="btn">🕵️‍♂️ <br>Agent</a>
+                    </h2>
+                </div>
+                <div class="frame">
+                    <h2>{{ num_devices }}</h2>
+                    <p>Managed Machines</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
