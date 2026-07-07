@@ -1,4 +1,5 @@
-__pycache__
+location_storage/__pycache__
 db.sqlite3
 machinery/__pycache__
-machinery/migrations
+machinery/migrations/
+venv/
