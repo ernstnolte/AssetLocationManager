@@ -10,7 +10,7 @@ After cloning this repository to your machine, you will have to configure the fo
 ### 1. Python Virtual Environment
 On Windows:
 
-    > py -3.11.9 -m venv venv
+    > py -m venv venv
     > venv\Scripts\activate
 
 Ensure that the (venv) tag appears in your terminal, then proceed to continue to dependency installation.
