@@ -1,4 +1,4 @@
-# Location Storage
+# Asset Location Manager
 
 ## Prerequisites
 - python 3.11.x
