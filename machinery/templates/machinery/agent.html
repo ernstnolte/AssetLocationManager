@@ -47,7 +47,7 @@
             align-items: center;
         }
         
-        .btn-back {
+        .btn{
             display: inline-block;
             background: #117744;
             color: white;
@@ -59,10 +59,13 @@
             cursor: pointer;
             font-size: 1rem;
             transition: background 0.2s;
-            width: 100%;
+            margin-bottom: 20px;
 
             box-sizing: border-box;
             text-align: center;
+        }
+        .back{
+            width: 100%;
         }
         .btn-back:hover { background: #148f52; }
         .btn-stop-mode { background: #a61c1c; }
@@ -141,6 +144,7 @@
 <body>
 
     <div class="container">
+        <a href="{% url 'home' %}" class="btn">← Home</a>
         
         <div class="header">
             <h1>🕵️‍♂️ Agent Telemetry</h1>
@@ -163,7 +167,7 @@
                         </select>
                     </div>
                     <div class="form-row">
-                        <button id="transmission-btn" class="btn-back" onclick="toggleTransmission()">Start Transmission</button>
+                        <button id="transmission-btn" class="btn back" onclick="toggleTransmission()">Start Transmission</button>
                     </div>
                 </div>
                 

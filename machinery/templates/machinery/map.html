@@ -17,7 +17,7 @@
         /* Sidebar Styling */
         #sidebar {
             width: 320px;
-            background: #252526;
+            background: #1e1e1e;
             display: flex;
             flex-direction: column;
             border-right: 1px solid #3c3c3c;
@@ -28,7 +28,7 @@
 
         .sidebar-header {
             padding: 20px;
-            background: #117744; /* Forestry Green */
+            background: #252525; /* Forestry Green */
             color: white;
         }
 
@@ -74,12 +74,23 @@
             background: rgba(255, 255, 255, 0.8) !important;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
+        .btn {
+            display: inline-block;
+            background: #117744;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            transition: background 0.2s;
+        }
     </style>
 </head>
 <body>
 
     <div id="sidebar">
         <div class="sidebar-header">
+            <a href="{% url 'home' %}" class="btn">← Home</a>
             <h2>Active Fleet</h2>
             <p>SA Forestry Operations</p>
         </div>
