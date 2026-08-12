@@ -1,52 +1,22 @@
-# Asset Location Manager
+# 🌲 Fleet Telemetry & Asset Tracker
 
-## Prerequisites
-- python 3.11.x
-- pip
+A Django application built for monitoring deployed machinery, logging GPS telemetry pings via an Agent application, and displaying real-time asset routes on interactive satellite maps.
 
-## Initial Setup
-After cloning this repository to your machine, you will have to configure the following
+---
 
-### 1. Python Virtual Environment
-On Windows:
+## Features
 
-    > py -m venv venv
-    > venv\Scripts\activate
+* **Asset Registry:** Manage machine entries, serial numbers, and total ping counts.
+* **Telemetry Logs:** Tabular history of timestamps, latitudes, and longitudes per asset.
+* **Layered Map:** Leaflet.js map (Esri World Imagery + Labels) with automated route polyline breadcrumbs.
+* **Responsive Control Panel:** Dark-themed UI tailored for desktop and field visibility.
 
-Ensure that the (venv) tag appears in your terminal, then proceed to continue to dependency installation.
+---
 
-### 2. Dependencies
-Inside the virtual environment:
+## Prerequisites & Tech Stack
 
-    > pip install --upgrade pip
-    > pip install -r requirements.txt
+* **Backend:** Python `3.11.x` or `3.12.x` / Django `4.2+`
+* **Frontend:** Leaflet.js, HTML5, CSS3
+* **Database:** SQLite (Default for development)
 
-This will install the required version of Django, and any other dependencies in the *requirements.txt* file.
-
-### 3. SQLite Database and Models
-
-To create the database and database objects, run the following:
-    
-    > python manage.py makemigrations
-    > python manage.py migrate
-
-### 4. Administrative Access to Django Server
-
-You will need an administrative user for development and testing (handy for test data management)
-
-    > python manage.py createsuperuser
-
-Follow the promts in your terminal to configure your admin credentials
-
-## Running the Application
-1. Start the development server:
-
-        > python manage.py runserver
-
-2. Your application will now be running at http://localhost:8000/
-
-        ## Home Page
-        http://localhost:8000/
-
-        ## Django Admin Panel
-        http://localhost:8000/admin/
+> **Note:** Python 3.14+ is not supported due to framework context-cloning compatibility issues. Stick to Python 3.11 or 3.12.
