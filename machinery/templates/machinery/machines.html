@@ -1,19 +1,22 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Machines</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managed Fleet</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="{% static 'machinery/css/style.css' %}">
 </head>
 <body>
-
     <div class="container">
-        <a href="{% url 'home' %}" class="btn-back">← Home</a>
+        <a href="{% url 'home' %}" class="btn btn-back">&larr; Home</a>
 
         <div class="header">
-            <h1>🌲 All Machinery</h1>
-            <div class="meta">Management view of all managed machines</strong></div>
+            <div class="header-main">
+                <h1>🌲 All Machinery</h1>
+                <p class="meta">Management view of all registered fleet devices</p>
+            </div>
         </div>
         
         <div class="hdiv">
@@ -21,7 +24,7 @@
                 <button class="tablinks active" onclick="openTab(event, 'Table')">List View</button>
                 <button class="tablinks" onclick="openTab(event, 'MapView')">Map View</button>
             </div>
-            <a href="{% url 'machine_add'%}" class="btn-add">+ Add Machine</a>
+            <a href="{% url 'machine_add'%}" class="btn btn-add">+ Add Machine</a>
         </div>
 
         <div id="Table" class="tabcontent" style="display: block;">
@@ -41,15 +44,21 @@
                             <td class="strong-name">
                                 <a href="{% url 'machine_detail' machine.pk%}" class="link">{{ machine.name }}</a>
                             </td>
-                            <td class="coords">{{ machine.latest_latitude|default:'N/A'|floatformat:6 }}, {{ machine.latest_longitude|default:'N/A'|floatformat:6 }}</td>
+                            <td class="coords">
+                                {% if machine.latest_latitude %}
+                                    {{ machine.latest_latitude|floatformat:6 }}, {{ machine.latest_longitude|floatformat:6 }}
+                                {% else %}
+                                    <span class="meta">N/A</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 <a href="{% url 'machine_detail' machine.pk %}" class="btn btn-primary">View Details</a>
                             </td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="3" style="text-align: center; color: #858585; padding: 30px;">
-                                No GPS tracking data found for this asset.
+                            <td colspan="4" class="empty-cell">
+                                No registered machinery currently available.
                             </td>
                         </tr>
                     {% endfor %}
@@ -58,7 +67,7 @@
         </div>
         
         <div id="MapView" class="tabcontent" style="display: none;">
-            <div id="map-container">
+            <div id="map-container" class="map-wrapper">
                 <div id="map"></div>
             </div>
         </div>
@@ -68,23 +77,18 @@
     <script>
         var map = L.map('map').setView([-25.0, 31.0], 9);
 
-        // 1. Base Satellite Imagery Layer
         var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri'
         }).addTo(map);
         
-
-        // 2. Transparent Roads & Labels Overlay (Creates the Hybrid Effect)
         var labelsLayer = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Labels &copy; Esri',
-            pane: 'markerPane' // This ensures labels draw beautifully ON TOP of everything else
+            pane: 'markerPane'
         }).addTo(map);
 
-        // Create an object to store our marker instances so we can trigger them later
         var machineMarkers = {};
         var bounds = L.latLngBounds();
 
-        // Loop through and place the singular latest pin for each active machine
         {% for m in active_locations %}
             var marker = L.marker([{{ m.latest_latitude }}, {{ m.latest_longitude }}])
                 .addTo(map)
@@ -103,12 +107,9 @@
                 `);
 
             bounds.extend(marker.getLatLng());
-
-            // Store the marker using the machine's primary key ID
             machineMarkers[{{ m.id }}] = marker;
         {% endfor %}
 
-        // Tab Switching Logic including the hidden engine layout fix
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
 
@@ -125,7 +126,6 @@
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
 
-            // FIX: Re-calculate map dimensions the exact instant its container becomes visible
             if (tabName === 'MapView') {
                 setTimeout(function() {
                     map.invalidateSize();

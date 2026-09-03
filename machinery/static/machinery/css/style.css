@@ -1,260 +1,412 @@
 /* ==========================================================================
-   1. Base & Global Styles
+   1. Global Base Styles
    ========================================================================== */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(30deg, #1e1e1e, #1e2421);
-    color: #fff;
+    background: #181818;
+    background-image: radial-gradient(circle at 50% 0%, #252d2a 0%, #181818 70%);
+    color: #cccccc;
     margin: 0;
-    padding: 40px;
+    padding: 40px 20px;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
-/* Sidebar / Dashboard layout reset */
 body.dashboard-layout {
     display: flex;
     height: 100vh;
     padding: 0;
     background: #1e1e1e;
+    overflow: hidden;
 }
 
 .container {
-    max-width: 80%;
+    max-width: 900px;
     margin: 0 auto;
 }
 
-/* Header Sections */
+/* ==========================================================================
+   2. Header, Navigation & Title Blocks
+   ========================================================================== */
 .header {
     background: #252526;
-    padding: 25px;
-    border-radius: 8px;
+    padding: 24px 32px;
+    border-radius: 10px;
     border: 1px solid #3c3c3c;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-main {
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
     margin: 0;
     color: #4ec9b0;
     font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
 }
 
 .meta {
     color: #858585;
-    margin-top: 5px;
-    font-size: 1rem;
+    margin-top: 6px;
+    font-size: 0.95rem;
 }
 
-/* Layout Utilities */
-.hdiv {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    max-width: 100%;
-    margin-bottom: 15px;
+.status-badge {
+    background: rgba(17, 119, 68, 0.2);
+    color: #4ec9b0;
+    border: 1px solid #117744;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
-.hdiv.centered {
-    justify-content: center;
-    align-items: center;
+.timer-badge {
+    background: #1e1e1e;
+    border: 1px solid #3c3c3c;
+    color: #4ec9b0;
+    font-family: monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
 }
 
 /* ==========================================================================
-   2. Buttons & Actions
+   3. KPI Grid & Summary Section
    ========================================================================== */
-.btn {
-    display: inline-block;
-    background: #117744;
-    color: #ffffff;
-    text-decoration: none;
-    text-align: center;
-    align-content: center;
-    padding: 10px 15px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    font-size: 1rem;
-    border: none;
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: background 0.2s;
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
 }
 
-.btn:hover {
-    background: #148f52;
-}
-
-.btn-back {
-    display: inline-block;
-    background: #117744;
-    color: #ffffff;
-    text-decoration: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    font-weight: bold;
-    transition: background 0.2s;
-}
-
-.btn-back:hover {
-    background: #148f52;
-}
-
-.btn-add, .btn-edit {
-    display: inline-block;
-    background: #0d5a34;
-    color: #ffffff;
-    text-decoration: none;
-    padding: 14px 18px;
+.kpi-card {
+    background: #252526;
+    background: linear-gradient(145deg, #2a2d2e 0%, #212121 100%);
+    border: 1px solid #3c3c3c;
     border-radius: 8px;
-    font-weight: bold;
-    font-size: 1rem;
-    align-self: center;
-    transition: background 0.2s;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.btn-add:hover, .btn-edit:hover {
-    background: #148f52;
+.kpi-title {
+    font-size: 0.8rem;
+    color: #858585;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+    margin-bottom: 10px;
 }
 
-.btn-primary {
-    background: #117744;
-    color: #ffffff;
-    text-decoration: none;
-    border: none;
-    padding: 5px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
+.kpi-value {
+    font-size: 2.2rem;
+    color: #4ec9b0;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
 }
 
-.btn-submit {
-    font-weight: bold;
-    max-width: 100%;
+.kpi-subtext {
+    font-size: 0.8rem;
+    color: #aaaaaa;
 }
 
-.btn-delete {
-    display: inline-block;
-    background: #c72e2e;
-    color: #ffffff;
-    text-decoration: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    font-weight: bold;
-    transition: background 0.2s;
+/* ==========================================================================
+   4. Function Lists & Cards
+   ========================================================================== */
+.functions-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.btn-delete:hover {
-    background: #e53939;
+.section-title {
+    font-size: 1.2rem;
+    color: #ce9178;
+    margin: 0 0 4px 4px;
+    font-weight: 600;
 }
 
-.btn-stop-mode {
-    background: #a61c1c;
-}
-
-.btn-stop-mode:hover {
-    background: #c22323;
-}
-
-.back-full {
+.list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
 }
 
-/* Links */
-.link {
+.frame {
+    background: #252526;
+    background: linear-gradient(145deg, #2a2d2e 0%, #212121 100%);
+    border-radius: 8px;
+    border: 1px solid #3c3c3c;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.frame.list-item {
+    width: 100%;
+    padding: 0;
+}
+
+.frame:hover {
+    transform: translateX(4px);
+    border-color: #117744;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 10px rgba(17, 119, 68, 0.2);
+}
+
+.btn.list-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px 24px;
+    width: 100%;
     color: #ffffff;
-    background: #0d5a34;
-    padding: 4px 6px;
-    border-radius: 4px;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.btn.list-btn .icon {
+    font-size: 1.8rem;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 4px;
+}
+
+.btn.list-btn .label {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #ffffff;
+    transition: color 0.2s ease;
+}
+
+.btn.list-btn .description {
+    font-size: 0.88rem;
+    color: #858585;
+    line-height: 1.3;
+}
+
+.btn.list-btn .arrow {
+    font-size: 1.3rem;
+    color: #858585;
+    margin-left: 16px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btn.list-btn:hover .label {
+    color: #4ec9b0;
+}
+
+.btn.list-btn:hover .arrow {
+    color: #4ec9b0;
+    transform: translateX(4px);
 }
 
 /* ==========================================================================
-   3. Forms & Inputs
+   5. General Buttons, Form Controls & Inputs
    ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-back {
+    background: #2d2d30;
+    color: #cccccc;
+    border-color: #3c3c3c;
+    margin-bottom: 16px;
+}
+
+.btn-back:hover {
+    background: #383838;
+    color: #ffffff;
+    border-color: #505050;
+}
+
+.btn-primary, .btn-submit, .btn-add {
+    background: #117744;
+    color: #ffffff;
+}
+
+.btn-primary:hover, .btn-submit:hover, .btn-add:hover {
+    background: #148f52;
+}
+
+.btn-edit {
+    background: #264f78;
+    color: #ffffff;
+}
+
+.btn-edit:hover {
+    background: #316498;
+}
+
+.btn-delete {
+    background: #8b2626;
+    color: #ffffff;
+}
+
+.btn-delete:hover {
+    background: #a83232;
+}
+
+.form-card, .control-panel {
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
 .form-row {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-width: 100%;
-    margin-bottom: 5px;
+    margin-bottom: 18px;
+}
+
+.form-label {
+    color: #4ec9b0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1px solid #3c3c3c;
+    background: #1e1e1e;
+    color: #ffffff;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.input-field:focus {
+    border-color: #4ec9b0;
 }
 
 .option-row {
     display: flex;
-    flex-direction: row;
-    gap: 8px;
-    max-width: 100%;
-    margin-bottom: 5px;
+    gap: 12px;
+    margin-top: 24px;
 }
 
-label {
-    font-size: 0.9rem;
-    color: #aaaaaa;
+.control-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.input-field {
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #505050;
-    background: #373738;
-    color: #7e7e7e;
-    font-size: 1rem;
-}
-
-.input-field:focus {
-    padding: 10px;
-    border-radius: 4px;
-    border: 2px solid #505050;
-    background: #373738;
-    color: #ffffff;
-    font-size: 1rem;
-    outline: none;
-    border-color: #4ec9b0;
-}
-
-.machine-picker {
+.control-left {
     width: 100%;
-    padding: 10px;
-    background: #2d2d30;
-    color: #ffffff;
-    border: 1px solid #3c3c3c;
-    border-radius: 4px;
-    font-size: 0.95rem;
-    outline: none;
-    box-sizing: border-box;
 }
 
 /* ==========================================================================
-   4. Tables & Data Display
+   6. Data Tables & Tab Controls
    ========================================================================== */
+.hdiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.tab {
+    display: flex;
+    gap: 8px;
+}
+
+.tablinks {
+    background: #252526;
+    color: #858585;
+    border: 1px solid #3c3c3c;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tablinks:hover {
+    background: #2d2d30;
+    color: #ffffff;
+}
+
+.tablinks.active {
+    background: #117744;
+    color: #ffffff;
+    border-color: #117744;
+}
+
+.tabcontent {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background: #252526;
     border-radius: 8px;
-    overflow: hidden;
     border: 1px solid #3c3c3c;
+    overflow: hidden;
+    margin-bottom: 24px;
 }
 
 th, td {
-    padding: 15px;
+    padding: 16px 20px;
     text-align: left;
-
-}
-
-td {
-    border-right: 1px dashed #2e2e2e;    
 }
 
 th {
     background: #2d2d30;
     color: #4ec9b0;
-    font-weight: 600;
-    border-bottom: 2px solid #3c3c3c;
-}
-
-tr {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     border-bottom: 1px solid #3c3c3c;
 }
 
-tr:last-child {
+td {
+    border-bottom: 1px solid #2d2d30;
+    font-size: 0.95rem;
+}
+
+tr:last-child td {
     border-bottom: none;
 }
 
@@ -262,202 +414,82 @@ tr:hover {
     background: #2a2d2e;
 }
 
-.timestamp {
-    color: #aaaaaa;
-    font-family: monospace;
+.timestamp { color: #aaaaaa; font-family: monospace; }
+.coords { color: #ce9178; font-family: monospace; }
+.strong-name .link {
+    color: #4ec9b0;
+    text-decoration: none;
+    font-weight: 600;
 }
-
-.coords {
-    font-family: monospace;
-    color: #ce9178;
+.strong-name .link:hover {
+    text-decoration: underline;
 }
-
-.strong-name {
-    font-family: sans-serif;
-    color: #ce9178;
-    font-size: medium;
+.empty-cell {
+    text-align: center;
+    color: #858585;
+    padding: 36px !important;
 }
 
 /* ==========================================================================
-   5. Tabs & Cards
+   7. Leaflet Maps, Footers & GIS Sidebar Layouts
    ========================================================================== */
-.tab {
-    display: flex;
-    background: #252526;
-    border: 1px solid #3c3c3c;
+.map-wrapper {
+    width: 100%;
+    height: 480px;
     border-radius: 8px;
+    border: 1px solid #3c3c3c;
     overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    margin-bottom: 24px;
 }
 
-.tablinks {
-    background: transparent;
-    color: #aaaaaa;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 20px;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    border-bottom: 3px solid transparent;
-}
-
-.tablinks:hover {
-    background: #2a2d2e;
-    color: #ffffff;
-}
-
-.tablinks.active {
-    background: #2d2d30;
-    color: #4ec9b0;
-    border-bottom: 3px solid #4ec9b0;
-    font-weight: 600;
-}
-
-.tabcontent {
-    animation: fadeEffect 0.3s;
-}
-
-@keyframes fadeEffect {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.frame {
-    background: linear-gradient(15deg, rgba(0, 201, 124, 0.04), rgba(255, 255, 255, 0.01));
-    padding: 25px;
-    border-radius: 10px;
-    width: 20%;
-    height: 150px;
-    text-align: center;
-    align-content: center;
-}
-
-/* ==========================================================================
-   6. Agent Telemetry & Maps
-   ========================================================================== */
-.control-grid {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-}
-
-.control-left {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.control-right {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-#timer-display {
-    background: #2d2d30;
-    border: 1px solid #3c3c3c;
-    color: #4ec9b0;
-    padding: 9%;
-    border-radius: 8px;
-    font-weight: 600;
-    font-family: monospace;
-    font-size: 1.3rem;
-    text-align: center;
+#map {
     width: 100%;
-    box-sizing: border-box;
-    letter-spacing: 0.5px;
-}
-
-#map-container { 
-    position: relative; 
-    width: 100%;
-    height: 500px; 
-    background: #252526;
-    border-radius: 8px;
-    overflow: hidden; 
-    border: 1px solid #3c3c3c;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-}
-
-#map { 
-    height: 100%; 
-    width: 100%; 
-}
-
-/* Leaflet Dark Popup Theme Defaults */
-.leaflet-popup-content-wrapper, .leaflet-popup-tip {
-    background: #252526 !important;
-    border: 1px solid #3c3c3c;
-    color: #ffffff !important;
-    border-radius: 4px;
-}
-
-/* Light Popup Variant (Map/Fleet View) */
-.leaflet-popup-light .leaflet-popup-content-wrapper,
-.leaflet-popup-light .leaflet-popup-tip {
-    background: rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    color: #333333 !important;
+    height: 100%;
 }
 
 .status-footer {
     background: #252526;
-    padding: 15px;
-    border-radius: 8px;
     border: 1px solid #3c3c3c;
+    border-radius: 8px;
+    padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.status-text {
+    color: #ffffff;
     font-size: 0.95rem;
 }
 
-#demo {
-    font-family: monospace;
-    color: #ce9178;
-}
-
-#demo strong {
-    color: #4ec9b0;
-}
-
-/* ==========================================================================
-   7. Sidebar / Fleet Dashboard
-   ========================================================================== */
-#sidebar {
+/* Full GIS Screen Sidebar & Layout */
+.sidebar {
     width: 320px;
     background: #1e1e1e;
     display: flex;
     flex-direction: column;
     border-right: 1px solid #3c3c3c;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
     z-index: 1000;
-    transition: 0.3s ease;
 }
 
 .sidebar-header {
-    padding: 20px;
-    background: #252525;
-    color: #ffffff;
+    padding: 24px 20px;
+    background: #252526;
+    border-bottom: 1px solid #3c3c3c;
 }
 
 .sidebar-header h2 {
-    margin: 0;
-    font-size: 1.4rem;
+    margin: 12px 0 4px 0;
+    color: #4ec9b0;
+    font-size: 1.3rem;
 }
 
 .sidebar-header p {
-    margin: 5px 0 0 0;
+    margin: 0;
+    color: #858585;
     font-size: 0.85rem;
-    opacity: 0.8;
-}
-
-.sidebar.collapsed {
-    width: 0;
 }
 
 .machine-list {
@@ -469,10 +501,10 @@ tr:hover {
 }
 
 .machine-item {
-    padding: 15px 20px;
-    border-bottom: 1px solid #3c3c3c;
+    padding: 16px 20px;
+    border-bottom: 1px solid #2d2d30;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s ease;
 }
 
 .machine-item:hover {
@@ -480,13 +512,31 @@ tr:hover {
 }
 
 .machine-name {
-    font-weight: bold;
-    font-size: 1rem;
-    color: #4ec9b0;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #ffffff;
 }
 
 .machine-sn {
     font-size: 0.8rem;
-    color: #858585;
-    margin-top: 3px;
+    color: #bebebe;
+    margin-top: 4px;
+}
+
+.gis-map-container {
+    flex-grow: 1;
+    position: relative;
+    height: 100vh;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    background: #252526 !important;
+    color: #cccccc !important;
+    border: 1px solid #3c3c3c;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
 }

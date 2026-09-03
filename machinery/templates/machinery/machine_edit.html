@@ -1,31 +1,36 @@
 {% load static %}
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ machine.name }} - Edit</title>
     <link rel="stylesheet" href="{% static 'machinery/css/style.css' %}">
 </head>
 <body>
     <div class="container">
-        <a href="{% url 'machine_detail' machine.id %}" class="btn btn-back">← Back to Machine Details</a>
+        <a href="{% url 'machine_detail' machine.id %}" class="btn btn-back">&larr; Back to Machine Details</a>
         
         <div class="header">
-            <h1>✎ Edit Machine</h1>
-
-            <div class="control-left">
-                <div class="form-row">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" value="{{ machine.name }}" class="input-field">
-                </div>
-                <div class="form-row">
-                    <label for="serial_number">S/N:</label>
-                    <input type="text" id="serial_number" name="serial_number" value="{{ machine.serial_number }}" class="input-field">
-                </div>
-                <div class="option-row">
-                    <a id="save-btn" type="button" class="btn btn-submit" onclick="saveMachine()">📁 Save</a>
-                    <a id="delete-btn" type="button" class="btn btn-delete" onclick="deleteMachine()">🗑️ Delete</a>
-                </div>
+            <div class="header-main">
+                <h1>✎ Edit Machine</h1>
+                <p class="meta">Update system identifiers or remove asset record</p>
             </div>
+        </div>
 
+        <div class="frame form-card">
+            <div class="form-row">
+                <label for="name" class="form-label">Asset Name:</label>
+                <input type="text" id="name" name="name" value="{{ machine.name }}" class="input-field">
+            </div>
+            <div class="form-row">
+                <label for="serial_number" class="form-label">Serial Number (S/N):</label>
+                <input type="text" id="serial_number" name="serial_number" value="{{ machine.serial_number }}" class="input-field">
+            </div>
+            <div class="option-row">
+                <button type="button" class="btn btn-submit" onclick="saveMachine()">📁 Save Changes</button>
+                <button type="button" class="btn btn-delete" onclick="deleteMachine()">🗑️ Delete Asset</button>
+            </div>
         </div>
     </div>
 
@@ -71,6 +76,5 @@
             }
         }
     </script>
-
 </body>
 </html>

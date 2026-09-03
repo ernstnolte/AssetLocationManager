@@ -1,36 +1,92 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Agent Location Recorder</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Location Recorder - Dashboard</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="{% static 'machinery/css/style.css' %}">
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Home - Location Storage Project</h1>
-            <div class="hdiv">
-                <div class="frame">
-                    <h2>
-                        <a href="{% url 'machines' %}" class="btn">🚜 <br> View Machines</a>
-                    </h2>
+        <!-- Main Title Header -->
+        <header class="header">
+            <div class="header-main">
+                <h1>Agent Location Recorder</h1>
+                <p class="meta">System Operations &amp; Telemetry Command Center</p>
+            </div>
+            <div class="header-status">
+                <span class="status-badge">System Online</span>
+            </div>
+        </header>
+
+        <!-- KPI Summary Grid -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-title">Managed Machines</span>
+                <span class="kpi-value">{{ num_machines }}</span>
+                <span class="kpi-subtext">Registered in Fleet</span>
+            </div>
+
+            <div class="kpi-card">
+                <span class="kpi-title">Active Field Agents</span>
+                <span class="kpi-value">3</span>
+                <span class="kpi-subtext">Transmitting Telemetry</span>
+            </div>
+
+            <div class="kpi-card">
+                <span class="kpi-title">Recorded Waypoints</span>
+                <span class="kpi-value">1,284</span>
+                <span class="kpi-subtext">Past 24 Hours</span>
+            </div>
+
+            <div class="kpi-card">
+                <span class="kpi-title">System Uptime</span>
+                <span class="kpi-value">99.9%</span>
+                <span class="kpi-subtext">All Nodes Operational</span>
+            </div>
+        </section>
+
+        <!-- Functions & Navigation List -->
+        <section class="functions-section">
+            <h2 class="section-title">System Modules</h2>
+            
+            <div class="list-container">
+                <div class="frame list-item">
+                    <a href="{% url 'machines' %}" class="btn list-btn">
+                        <span class="icon">🚜</span>
+                        <div class="btn-text">
+                            <span class="label">View Machines</span>
+                            <span class="description">Browse and manage fleet devices, serial numbers, and configuration settings.</span>
+                        </div>
+                        <span class="arrow">&rarr;</span>
+                    </a>
                 </div>
-                <div class="frame">
-                    <h2>
-                        <a href="{% url 'machine_map' %}" class="btn">🗺️ <br> View Map</a>
-                    </h2>
+
+                <div class="frame list-item">
+                    <a href="{% url 'machine_map' %}" class="btn list-btn">
+                        <span class="icon">🗺️</span>
+                        <div class="btn-text">
+                            <span class="label">Live GIS Map</span>
+                            <span class="description">Monitor real-time geographical movements and machine location history.</span>
+                        </div>
+                        <span class="arrow">&rarr;</span>
+                    </a>
                 </div>
-                <div class="frame">
-                    <h2>
-                        <a href="{% url 'agent' %}" class="btn">🕵️‍♂️ <br>Agent</a>
-                    </h2>
-                </div>
-                <div class="frame">
-                    <h2>{{ num_devices }}</h2>
-                    <p>Managed Machines</p>
+
+                <div class="frame list-item">
+                    <a href="{% url 'agent' %}" class="btn list-btn">
+                        <span class="icon">🕵️‍♂️</span>
+                        <div class="btn-text">
+                            <span class="label">Agent Console</span>
+                            <span class="description">Configure client recording intervals, manual logging, and transmission modes.</span>
+                        </div>
+                        <span class="arrow">&rarr;</span>
+                    </a>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
-    
 </body>
+</html>

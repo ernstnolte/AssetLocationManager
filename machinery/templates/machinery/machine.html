@@ -1,36 +1,37 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ machine.name }} - Telemetry History</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="{% static 'machinery/css/style.css' %}">
 </head>
 <body>
-
     <div class="container">
-        <a href="{% url 'machines' %}" class="btn-back">← Back to Machine List</a>
+        <a href="{% url 'machines' %}" class="btn btn-back">&larr; Back to Machine List</a>
 
         <div class="header">
-            <h1>🚚 {{ machine.name }} - Telemetry Log</h1>
-            <div class="meta">Serial Number: <strong>{{ machine.serial_number }} - {{ pings.count }} entries</strong></div>
+            <div class="header-main">
+                <h1>🚚 {{ machine.name }}</h1>
+                <p class="meta">Serial Number: <strong>{{ machine.serial_number }}</strong> &bull; {{ pings.count }} total entries</p>
+            </div>
         </div>
 
-        <h2>Telemetry Log ({{ pings.count }} entries)</h2>
-        
         <div class="hdiv">
             <div class="tab">
                 <button class="tablinks active" onclick="openTab(event, 'Table')">List View</button>
                 <button class="tablinks" onclick="openTab(event, 'MapView')">Map View</button>
             </div>
-            <a href="{% url 'machine_edit' machine.id%}" class="btn-edit">✎ Edit Machine</a>
+            <a href="{% url 'machine_edit' machine.id%}" class="btn btn-edit">✎ Edit Machine</a>
         </div>
 
         <div id="Table" class="tabcontent" style="display: block;">
             <table>
                 <thead>
                     <tr>
-                        <th>Date & Time</th>
+                        <th>Date &amp; Time</th>
                         <th>Latitude</th>
                         <th>Longitude</th>
                     </tr>
@@ -44,7 +45,7 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="3" style="text-align: center; color: #858585; padding: 30px;">
+                            <td colspan="3" class="empty-cell">
                                 No GPS tracking data found for this asset.
                             </td>
                         </tr>
@@ -54,7 +55,7 @@
         </div>
         
         <div id="MapView" class="tabcontent" style="display: none;">
-            <div id="map-container">
+            <div id="map-container" class="map-wrapper">
                 <div id="map"></div>
             </div>
         </div>
@@ -62,17 +63,13 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialize default fallback perspective array loop
-
         var map = L.map('map', { maxZoom: 30 }).setView([-28.5, 28.0], 6);
 
-        // 1. Base Satellite Imagery Layer
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri',
             maxZoom: 30
         }).addTo(map);
         
-        // 2. High Visibility Labels Pane Layer Setup
         map.createPane('labelsPane');
         map.getPane('labelsPane').style.zIndex = 650;
         map.getPane('labelsPane').style.pointerEvents = 'none';
@@ -82,10 +79,8 @@
             maxZoom: 30
         }).addTo(map);
 
-        // Array storage mapping layout variables
         var trackingCoordinates = [];
 
-        // Parse and ingest Django loops directly into safe native JavaScript arrays
         {% for ping in pings %}
             trackingCoordinates.push({
                 lat: parseFloat("{{ ping.latitude }}"),
@@ -94,7 +89,6 @@
             });
         {% endfor %}
 
-        // Plot markers and build breadcrumb trail polyline mapping routes
         if (trackingCoordinates.length > 0) {
             var pointList = [];
             
@@ -102,15 +96,14 @@
                 var latLng = [point.lat, point.lng];
                 pointList.push(latLng);
 
-                // Distinct colors for deployment points (Start: Green, History: Amber, Newest: Blue)
                 var markerColor = 'rgb(230, 126, 34, 0.1)';
                 var markerRadius = 2;
                 
                 if (index === 0) {
-                    markerColor = '#db343c'; // Newest record point entry
+                    markerColor = '#db343c';
                     markerRadius = 12;
                 } else if (index === trackingCoordinates.length - 1) {
-                    markerColor = '#2ecc71'; // Oldest record point entry
+                    markerColor = '#2ecc71';
                     markerRadius = 8;
                 }
 
@@ -126,7 +119,6 @@
                 .bindPopup(`<strong>Point #${trackingCoordinates.length - index}</strong><br><span style="color:#aaa">${point.time}</span>`);
             });
 
-            // Draw connecting tracking vector historical paths across tracking timeline points
             L.polyline(pointList, {
                 color: '#587fd3',
                 weight: 4,
@@ -134,12 +126,10 @@
                 dashArray: '5, 10'
             }).addTo(map);
 
-            // Dynamically snap and auto-zoom map layout perspectives perfectly around all parsed metrics
             var bounds = new L.LatLngBounds(pointList);
             map.fitBounds(bounds, { padding: [40, 40] });
         }
 
-        // Tab Switching Logic including the hidden engine layout fix
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
 
@@ -156,7 +146,6 @@
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
 
-            // FIX: Re-calculate map dimensions the exact instant its container becomes visible
             if (tabName === 'MapView') {
                 setTimeout(function() {
                     map.invalidateSize();

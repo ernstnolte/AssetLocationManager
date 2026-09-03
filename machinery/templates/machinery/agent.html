@@ -2,63 +2,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Agent Location Recorder</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Telemetry Console</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="{% static 'machinery/css/style.css' %}">
 </head>
 <body>
-
     <div class="container">
-        <a href="{% url 'home' %}" class="btn">← Home</a>
+        <a href="{% url 'home' %}" class="btn btn-back">&larr; Home</a>
         
         <div class="header">
-            <h1>🕵️‍♂️ Agent Telemetry</h1>
-            <div class="meta">Asset deployment real-time position compiler</div>
+            <div class="header-main">
+                <h1>🕵️‍♂️ Agent Telemetry</h1>
+                <p class="meta">Asset deployment real-time position compiler</p>
+            </div>
+            <div id="timer-display" class="timer-badge">DURATION: 00:00:00</div>
         </div>
 
-        <div class="header">
+        <div class="frame control-panel">
             <div class="control-grid">
-                
                 <div class="control-left">
                     <div class="form-row">
-                        {% comment %} <label for="machine-select">Assign Target Machine:</label> {% endcomment %}
-                        <select id="machine-select" class="machine-picker">
+                        <select id="machine-select" class="machine-picker input-field">
+                            <option value="" disabled selected>Select a machine...</option>
                             {% for m in machines %}
                                 <option value="{{ m.id }}">{{ m.name }} ({{ m.serial_number }})</option>
                             {% empty %}
-                                <option value="">No registered machines found</option>
+                                <option value="" disabled>No registered machines found</option>
                             {% endfor %}
-                            <option value="" disabled selected>Select a machine...</option>
                         </select>
                     </div>
                     <div class="form-row">
-                        <button id="transmission-btn" class="btn back" onclick="toggleTransmission()">Start Transmission</button>
+                        <button id="transmission-btn" class="btn btn-submit" onclick="toggleTransmission()">Start Transmission</button>
                     </div>
                 </div>
-                
-                <div class="control-right">
-                    <div id="timer-display">DURATION: 00:00:00</div>
-                </div>
-
             </div>
         </div>
         
-        <div id="map-container">
+        <div id="map-container" class="map-wrapper">
             <div id="map"></div>
         </div>
         
         <div class="status-footer">
-            <div id="demo">Transmission status: Offline</div>
+            <div id="demo" class="status-text">Transmission status: Offline</div>
             <div id="sync-status" class="timestamp">0 pings pending</div>
         </div>
-        
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         var map = L.map('map').setView([-28.5, 28.0], 6);
         var currentMarker = null;
-        
         var watchId = null; 
         var timerId = null;
         var totalSeconds = 0;
@@ -97,7 +92,7 @@
                 if (navigator.geolocation) {
                     machineSelector.disabled = true;
                     actionBtn.innerHTML = "Stop Transmission";
-                    actionBtn.className = "btn-back btn-stop-mode";
+                    actionBtn.className = "btn btn-delete";
                     displayArea.innerHTML = "Opening hardware hook...";
 
                     watchId = navigator.geolocation.watchPosition(processIncomingPosition, error, {
@@ -126,7 +121,7 @@
                 
                 machineSelector.disabled = false;
                 actionBtn.innerHTML = "Start Transmission";
-                actionBtn.className = "btn-back";
+                actionBtn.className = "btn btn-submit";
                 displayArea.innerHTML = "Transmission status: Offline";
             }
         }
