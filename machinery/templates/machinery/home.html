@@ -31,13 +31,13 @@
 
             <div class="kpi-card">
                 <span class="kpi-title">Active Field Agents</span>
-                <span class="kpi-value">3</span>
+                <span class="kpi-value">{{ num_transmitting }}</span>
                 <span class="kpi-subtext">Transmitting Telemetry</span>
             </div>
 
             <div class="kpi-card">
                 <span class="kpi-title">Recorded Waypoints</span>
-                <span class="kpi-value">1,284</span>
+                <span class="kpi-value">{{ num_pings24 }}</span>
                 <span class="kpi-subtext">Past 24 Hours</span>
             </div>
 
@@ -57,7 +57,7 @@
                     <a href="{% url 'machines' %}" class="btn list-btn">
                         <span class="icon">🚜</span>
                         <div class="btn-text">
-                            <span class="label">View Machines</span>
+                            <span class="label">Manage Machines</span>
                             <span class="description">Browse and manage fleet devices, serial numbers, and configuration settings.</span>
                         </div>
                         <span class="arrow">&rarr;</span>

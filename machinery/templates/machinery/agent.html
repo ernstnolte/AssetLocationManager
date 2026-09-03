@@ -107,6 +107,8 @@
                         updateTimerUI();
                     }, 1000);
 
+                    is_transmitting = true;
+
                 } else {
                     displayArea.innerHTML = "Geolocation unsupported.";
                 }
@@ -123,7 +125,19 @@
                 actionBtn.innerHTML = "Start Transmission";
                 actionBtn.className = "btn btn-submit";
                 displayArea.innerHTML = "Transmission status: Offline";
+
+                is_transmitting = false;
             }
+            fetch("/agent/set_transmit/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    machine_id: Number(machineSelector.value),
+                    is_transmitting: is_transmitting
+                })
+            })
         }
 
         function updateTimerUI() {

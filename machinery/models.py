@@ -29,6 +29,7 @@ class Agent(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, null=False)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE, null=False)
     uid = models.CharField(unique=True, max_length=50)
+    is_transmitting = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return self.uid

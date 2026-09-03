@@ -1,15 +1,29 @@
 import json
-#import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models import OuterRef, Subquery, Count
 from django.utils.dateparse import parse_datetime
-from .models import Machine, MachineLocation, Team, Member
+from datetime import timedelta
+from django.utils import timezone
+from .models import Machine, MachineLocation, Team, Agent
 
 def home(request):
     num_machines = Machine.objects.count()
-    return render(request, 'machinery/home.html', {'num_machines': num_machines})
+    num_transmitting = Agent.objects.filter(
+        is_transmitting=True
+    ).count()
+
+    cutoff = timezone.now() - timedelta(hours=24)
+    num_pings24 = MachineLocation.objects.filter(
+        timestamp__gte=cutoff
+    ).count()
+
+    return render(request, "machinery/home.html", {
+        "num_machines": num_machines,
+        "num_transmitting": num_transmitting,
+        "num_pings24": num_pings24,
+    })
 
 def machine_map(request):
     # 1. Subqueries to find the latest latitude, longitude, and timestamp for EACH machine
@@ -102,6 +116,21 @@ def machine_delete(request, pk):
 def agent(request):
     machines = Machine.objects.all().order_by('name')
     return render(request, 'machinery/agent.html', {'machines': machines})
+
+@csrf_exempt
+def set_agent_transmit(request):
+    if request.method != "POST":
+        return JsonResponse({"status": "error"}, status=405)
+
+    data = json.loads(request.body)
+    machine_id = data.get("machine_id")
+    is_transmitting = data.get("is_transmitting", False)
+
+    agent = get_object_or_404(Agent, machine_id=machine_id)
+    agent.is_transmitting = bool(is_transmitting)
+    agent.save(update_fields=["is_transmitting"])
+
+    return JsonResponse({"status": "success"})
 
 @csrf_exempt
 def save_agent_location(request):
