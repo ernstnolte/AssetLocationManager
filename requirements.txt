@@ -1,2 +1,1 @@
-#Development version, requires Python v3.11.9
-Django>=4.2,<5.1
+Django>=5.2

@@ -3,9 +3,9 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render, get_object_or_404
-from django.db.models import OuterRef, Subquery
+from django.db.models import OuterRef, Subquery, Count
 from django.utils.dateparse import parse_datetime
-from .models import Machine, MachineLocation
+from .models import Machine, MachineLocation, Team, Member
 
 def home(request):
     num_machines = Machine.objects.count()
@@ -154,3 +154,12 @@ def save_agent_location(request):
         return JsonResponse({"status": "error", "message": "Malformed JSON structure input."}, status=400)
     except Exception as e:
         return JsonResponse({"status": "error", "message": f"System Ingestion Fault: {str(e)}"}, status=500)
+
+def teams(request):
+    teams = Team.objects.annotate(
+        num_members=Count('member')
+    ).order_by('name')
+
+    return render(request,'machinery/teams.html', {
+        'teams': teams,
+    })
