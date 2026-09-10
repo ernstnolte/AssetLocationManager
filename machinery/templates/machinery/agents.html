@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managed Fleet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{% static 'machinery/css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'home' %}" class="btn btn-back">&larr; Home</a>
+
+        <div class="header">
+            <div class="header-main">
+                <h1>🕵️‍♂️ All Agents</h1>
+                <p class="meta">Management view of all registered telemetry agents</p>
+            </div>
+        </div>
+        
+        <div class="hdiv">
+            <div class="tab">
+                <button class="tablinks active" onclick="openTab(event, 'Table')">List View</button>
+            </div>
+            <a href="{% url 'agent_add'%}" class="btn btn-add">+ Register Agent</a>
+        </div>
+
+        <div id="Table" class="tabcontent" style="display: block;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>UID</th>
+                        <th>Member</th>
+                        <th>Machine</th>
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agent in agents %}
+                        <tr>
+                            <td class="timestamp">{{ agent.uid }}</td>
+                            <td class="strong-name">{{ agent.member }}</td>
+                            <td class="">{{ agent.machine }}</td>
+                            <td>
+                                <a href="{% url 'machine_detail' agent.pk %}" class="btn btn-primary">View Details</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-cell">
+                                No registered agents currently available.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    </script>
+</body>
+</html>
