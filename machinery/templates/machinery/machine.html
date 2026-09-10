@@ -63,11 +63,10 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map', { maxZoom: 30 }).setView([-28.5, 28.0], 6);
+        var map = L.map('map').setView([-28.5, 28.0], 9);
 
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri',
-            maxZoom: 30
         }).addTo(map);
         
         map.createPane('labelsPane');
@@ -76,7 +75,6 @@
 
         L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
             pane: 'labelsPane',
-            maxZoom: 30
         }).addTo(map);
 
         var trackingCoordinates = [];
