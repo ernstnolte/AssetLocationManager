@@ -41,16 +41,16 @@
                 <span class="kpi-subtext">Past 24 Hours</span>
             </div>
 
-            <div class="kpi-card">
-                <span class="kpi-title">System Uptime</span>
-                <span class="kpi-value">99.9%</span>
-                <span class="kpi-subtext">All Nodes Operational</span>
-            </div>
+            <a class="kpi-card" style="text-decoration: none" href="{% url 'machine_map' %}">
+                <span class="kpi-title">Live Map</span>
+                <span class="kpi-value">🌍</span>
+                <span class="kpi-subtext">View Live Map</span>
+            </a>
         </section>
 
         <!-- Functions & Navigation List -->
         <section class="functions-section">
-            <h2 class="section-title">System Modules</h2>
+            <h2 class="section-title">System Management</h2>
             
             <div class="list-container">
                 <div class="frame list-item">
@@ -65,18 +65,7 @@
                 </div>
 
                 <div class="frame list-item">
-                    <a href="{% url 'machine_map' %}" class="btn list-btn">
-                        <span class="icon">🗺️</span>
-                        <div class="btn-text">
-                            <span class="label">Live GIS Map</span>
-                            <span class="description">Monitor real-time geographical movements and machine location history.</span>
-                        </div>
-                        <span class="arrow">&rarr;</span>
-                    </a>
-                </div>
-
-                <div class="frame list-item">
-                    <a href="{% url 'agent' %}" class="btn list-btn">
+                    <a href="{% url 'agents' %}" class="btn list-btn">
                         <span class="icon">🕵️‍♂️</span>
                         <div class="btn-text">
                             <span class="label">Agent Console</span>

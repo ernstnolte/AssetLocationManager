@@ -192,3 +192,19 @@ def teams(request):
     return render(request,'machinery/teams.html', {
         'teams': teams,
     })
+
+def agents(request):
+    agents = Agent.objects.all().order_by('member')
+    return render(request, 'machinery/agents.html', {'agents': agents})
+
+def agent_add(request):
+    if request.method == 'POST':
+        member = request.POST.get('member')
+        machine_id = request.POST.get('machine_id')
+        if member and machine_id:
+            machine = get_object_or_404(Machine, pk=machine_id)
+            Agent.objects.create(member=member, machine=machine)
+            return redirect('agents')
+    machines = Machine.objects.all()
+    return render(request, 'machinery/agent_add.html', {'machines': machines})
+    

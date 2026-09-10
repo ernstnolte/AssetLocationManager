@@ -14,4 +14,6 @@ urlpatterns = [
     path('agent/save/', views.save_agent_location, name='save_agent_location'),
     path('agent/set_transmit/', views.set_agent_transmit, name='set_agent_transmit'),
     path('teams/', views.teams, name='teams'),
+    path('agents/', views.agents, name='agents'),
+    path('agent/add/', views.agent_add, name='agent_add'),
 ]
