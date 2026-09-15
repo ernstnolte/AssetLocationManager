@@ -13,10 +13,17 @@
         <a href="{% url 'machines' %}" class="btn btn-back">&larr; Back to Machine List</a>
 
         <div class="header">
-            <div class="header-main">
-                <h1>🚚 {{ machine.name }}</h1>
-                <p class="meta">Serial Number: <strong>{{ machine.serial_number }}</strong> &bull; {{ pings.count }} total entries</p>
-            </div>
+            <span>
+                <div class="header-main">
+                    <h1>🚚 {{ machine.name }}</h1>
+                    <p class="meta">Serial Number: <strong>{{ machine.serial_number }}</strong> &bull; {{ pings.count }} total entries</p>
+                </div>
+            </span>
+            <span>
+                <div class="header-qr">
+                    <div id="qrcode" style="width: 130px; height: 130px;" alt="agent-registration-qr"></div>
+                </div>
+            </span>
         </div>
 
         <div class="hdiv">
@@ -62,6 +69,25 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            // Construct the full registration URL
+            // We use request.scheme and request.get_host to get 'http://yourdomain.com'
+            var host = "{{ request.scheme }}://{{ request.get_host }}";
+            var registerPath = "{% url 'agent_register' machine.id %}";
+            var fullUrl = host + registerPath;
+            // Generate the QR code inside the 'qrcode' div
+            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: fullUrl,
+                width: 128,  // width in pixels
+                height: 128, // height in pixels
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+    </script>
     <script>
         var map = L.map('map').setView([-28.5, 28.0], 9);
 

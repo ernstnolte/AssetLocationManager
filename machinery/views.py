@@ -1,12 +1,13 @@
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models import OuterRef, Subquery, Count
 from django.utils.dateparse import parse_datetime
 from datetime import timedelta
 from django.utils import timezone
-from .models import Machine, MachineLocation, Team, Agent
+from .models import Machine, MachineLocation, Team, Agent, Member
+import uuid
 
 def home(request):
     num_machines = Machine.objects.count()
@@ -114,23 +115,74 @@ def machine_delete(request, pk):
 
 
 def agent(request):
-    machines = Machine.objects.all().order_by('name')
-    return render(request, 'machinery/agent.html', {'machines': machines})
+    agent_uid = request.session.get('agent_uid')
+    if not agent_uid:
+        return redirect('home') # Or show an error that they aren't registered
+        
+    try:
+        current_agent = Agent.objects.get(uid=agent_uid)
+    except Agent.DoesNotExist:
+        return redirect('home')
+        
+    # Render your telemetry transmission page...
+    return render(request, 'machinery/agent.html', {'agent': current_agent})
+
+
+def agent_register(request, machine_id):
+    machine = get_object_or_404(Machine, pk=machine_id)
+    
+    if request.method == 'POST':
+        cell_number = request.POST.get('cell_number')
+        
+        if not cell_number:
+            return HttpResponseBadRequest("Cell number is required.")
+            
+        # Find the member by cell number
+        try:
+            member = Member.objects.get(cell_number=cell_number)
+        except Member.DoesNotExist:
+            return render(request, 'machinery/agent_register.html', {
+                'machine': machine,
+                'error': 'Member not found. Please check your cell number.'
+            })
+            
+        # Generate a unique UID for this device
+        device_uid = str(uuid.uuid4())
+        
+        # Create the new Agent record
+        agent = Agent.objects.create(
+            member=member,
+            machine=machine,
+            uid=device_uid,
+            is_transmitting=False
+        )
+        
+        # Store the UID in the session so the telemetry page knows who is transmitting
+        request.session['agent_uid'] = device_uid
+        
+        # Redirect to the page that handles telemetry
+        return redirect('agent')
+        
+    return render(request, 'machinery/agent_register.html', {'machine': machine})
 
 @csrf_exempt
 def set_agent_transmit(request):
     if request.method != "POST":
         return JsonResponse({"status": "error"}, status=405)
-
     data = json.loads(request.body)
-    machine_id = data.get("machine_id")
     is_transmitting = data.get("is_transmitting", False)
-
-    agent = get_object_or_404(Agent, machine_id=machine_id)
-    agent.is_transmitting = bool(is_transmitting)
-    agent.save(update_fields=["is_transmitting"])
-
-    return JsonResponse({"status": "success"})
+    # 1. Get the specific device's UID from the session
+    agent_uid = request.session.get('agent_uid')
+    if not agent_uid:
+        return JsonResponse({"status": "error", "message": "No active agent session."}, status=401)
+    # 2. Look up the Agent by its unique UID
+    try:
+        agent = Agent.objects.get(uid=agent_uid)
+        agent.is_transmitting = bool(is_transmitting)
+        agent.save(update_fields=["is_transmitting"])
+        return JsonResponse({"status": "success"})
+    except Agent.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Agent not found."}, status=404)
 
 @csrf_exempt
 def save_agent_location(request):

@@ -16,4 +16,5 @@ urlpatterns = [
     path('teams/', views.teams, name='teams'),
     path('agents/', views.agents, name='agents'),
     path('agent/add/', views.agent_add, name='agent_add'),
+    path('agent/register/<int:machine_id>/', views.agent_register, name='agent_register'),
 ]

@@ -24,14 +24,9 @@
             <div class="control-grid">
                 <div class="control-left">
                     <div class="form-row">
-                        <select id="machine-select" class="machine-picker input-field">
-                            <option value="" disabled selected>Select a machine...</option>
-                            {% for m in machines %}
-                                <option value="{{ m.id }}">{{ m.name }} ({{ m.serial_number }})</option>
-                            {% empty %}
-                                <option value="" disabled>No registered machines found</option>
-                            {% endfor %}
-                        </select>
+                        <input type="text" class="machine-picker input-field" value="{{ agent.machine.name }} ({{ agent.machine.serial_number }})" disabled>
+                        <!-- Hidden input so your JavaScript can read the correct ID -->
+                        <input type="hidden" id="machine-select" value="{{ agent.machine.id }}" data-name="{{ agent.machine.name }}">
                     </div>
                     <div class="form-row">
                         <button id="transmission-btn" class="btn btn-submit" onclick="toggleTransmission()">Start Transmission</button>
@@ -151,7 +146,7 @@
             const currentLat = position.coords.latitude;
             const currentLng = position.coords.longitude;
             const selectedId = machineSelector.value;
-            const selectedName = machineSelector.options[machineSelector.selectedIndex].text;
+            const selectedName = machineSelector.getAttribute('data-name');
             
             displayArea.innerHTML = `📡 <strong>Transmitting</strong>: Lat ${currentLat.toFixed(5)}, Lng ${currentLng.toFixed(5)}`;
 

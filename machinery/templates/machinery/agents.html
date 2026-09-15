@@ -23,7 +23,6 @@
             <div class="tab">
                 <button class="tablinks active" onclick="openTab(event, 'Table')">List View</button>
             </div>
-            <a href="{% url 'agent_add'%}" class="btn btn-add">+ Register Agent</a>
         </div>
 
         <div id="Table" class="tabcontent" style="display: block;">
@@ -43,7 +42,7 @@
                             <td class="strong-name">{{ agent.member }}</td>
                             <td class="">{{ agent.machine }}</td>
                             <td>
-                                <a href="{% url 'machine_detail' agent.pk %}" class="btn btn-primary">View Details</a>
+                                <a href="{% url 'machine_detail' agent.machine.pk %}" class="btn btn-primary">View Details</a>
                             </td>
                         </tr>
                     {% empty %}

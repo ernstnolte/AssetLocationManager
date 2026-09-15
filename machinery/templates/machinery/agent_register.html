@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Device for {{ machine.name }}</title>
+</head>
+<body>
+    <h1>Register as Telemetry Agent</h1>
+    <p>Machine: {{ machine.name }} ({{ machine.serial_number }})</p>
+    
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    
+    <form method="POST">
+        {% csrf_token %}
+        <label for="cell_number">Your Cell Number:</label>
+        <input type="text" id="cell_number" name="cell_number" required>
+        <button type="submit">Start Transmitting</button>
+    </form>
+</body>
+</html>
